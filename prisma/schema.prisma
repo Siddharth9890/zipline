@@ -1,5 +1,5 @@
 datasource db {
-  provider = "postgresql"
+  provider = "cockroachdb"
   url      = env("DATABASE_URL")
 }
 
@@ -8,7 +8,7 @@ generator client {
 }
 
 model User {
-  id             Int              @id @default(autoincrement())
+  id             Int              @id @default(sequence())
   uuid           String           @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   username       String
   password       String?
@@ -30,7 +30,7 @@ model User {
 }
 
 model Folder {
-  id        Int      @id @default(autoincrement())
+  id        Int      @id @default(sequence())
   name      String
   public    Boolean  @default(false)
   createdAt DateTime @default(now())
@@ -43,7 +43,7 @@ model Folder {
 }
 
 model File {
-  id           Int            @id @default(autoincrement())
+  id           Int            @id @default(sequence())
   name         String
   originalName String?
   mimetype     String         @default("image/png")
@@ -67,7 +67,7 @@ model File {
 }
 
 model Thumbnail {
-  id        Int      @id @default(autoincrement())
+  id        Int      @id @default(sequence())
   createdAt DateTime @default(now())
   name      String
 
@@ -76,7 +76,7 @@ model Thumbnail {
 }
 
 model InvisibleFile {
-  id    Int    @id @default(autoincrement())
+  id    Int    @id @default(sequence())
   invis String @unique
 
   fileId Int  @unique
@@ -97,7 +97,7 @@ model Url {
 }
 
 model InvisibleUrl {
-  id    Int    @id @default(autoincrement())
+  id    Int    @id @default(sequence())
   invis String @unique
 
   urlId String @unique
@@ -105,13 +105,13 @@ model InvisibleUrl {
 }
 
 model Stats {
-  id        Int      @id @default(autoincrement())
+  id        Int      @id @default(sequence())
   createdAt DateTime @default(now())
   data      Json
 }
 
 model Invite {
-  id        Int       @id @default(autoincrement())
+  id        Int       @id @default(sequence())
   code      String    @unique
   createdAt DateTime  @default(now())
   expiresAt DateTime?
@@ -122,7 +122,7 @@ model Invite {
 }
 
 model OAuth {
-  id       Int            @id @default(autoincrement())
+  id       Int            @id @default(sequence())
   provider OauthProviders
   user     User           @relation(fields: [userId], references: [uuid], onDelete: Cascade)
   userId   String         @db.Uuid
@@ -141,7 +141,7 @@ enum OauthProviders {
 }
 
 model IncompleteFile {
-  id        Int      @id @default(autoincrement())
+  id        Int      @id @default(sequence())
   createdAt DateTime @default(now())
 
   status         ProcessingStatus
